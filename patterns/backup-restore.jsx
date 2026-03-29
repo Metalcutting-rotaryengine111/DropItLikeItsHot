@@ -1,14 +1,14 @@
 /**
  * 🔥 DropItLikeItsHot - Pattern 5: Backup & Restore
  *
- * IndexedDB 데이터를 JSON으로 백업하고 복원합니다.
- * 파일 데이터를 base64로 변환해서 JSON에 포함시킵니다.
+ * Back up IndexedDB data to JSON and restore it.
+ * File data is converted to base64 and embedded in the JSON.
  *
- * ⚠️ 파일이 많으면 JSON이 수백 MB가 될 수 있습니다.
- *    백업 전 토스트로 "잠시 기다려주세요" 알려주세요.
+ * ⚠️ If you have lots of files, the JSON can be hundreds of MB.
+ *    Show a "please wait" toast before starting the backup.
  */
 
-// 💾 백업: IndexedDB → base64 → JSON 파일 다운로드
+// 💾 Backup: IndexedDB → base64 → download as JSON file
 const handleBackup = async (items, FileDB) => {
   const backup = {
     version: 1,
@@ -18,7 +18,7 @@ const handleBackup = async (items, FileDB) => {
 
   for (const item of items) {
     const entry = { ...item };
-    delete entry.fileUrl;  // blob URL은 세션마다 바뀌므로 저장 불가
+    delete entry.fileUrl;  // blob URLs change every session, can't be saved
 
     try {
       const db = await FileDB.open();
@@ -45,7 +45,7 @@ const handleBackup = async (items, FileDB) => {
     backup.items.push(entry);
   }
 
-  // JSON → Blob → 다운로드
+  // JSON → Blob → download
   const json = JSON.stringify(backup);
   const blob = new Blob([json], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
@@ -59,9 +59,9 @@ const handleBackup = async (items, FileDB) => {
 };
 
 
-// 📥 복원: JSON 파일 → base64 → IndexedDB
+// 📥 Restore: JSON file → base64 → IndexedDB
 const handleRestore = async (existingItems, setItems, FileDB) => {
-  // 파일 선택 다이얼로그 열기
+  // Open file picker dialog
   const input = document.createElement('input');
   input.type = 'file';
   input.accept = '.json';
@@ -80,7 +80,7 @@ const handleRestore = async (existingItems, setItems, FileDB) => {
 
       let count = 0;
       for (const entry of backup.items) {
-        // 중복 체크
+        // Skip duplicates
         if (existingItems.some(it => it.id === entry.id)) continue;
 
         if (entry.fileData) {
@@ -96,20 +96,20 @@ const handleRestore = async (existingItems, setItems, FileDB) => {
         setItems(prev => [...prev, entry]);
       }
 
-      alert(`${count}건 복원 완료!`);
+      alert(`${count} item(s) restored!`);
     } catch (err) {
-      alert('복원 실패: ' + err.message);
+      alert('Restore failed: ' + err.message);
     }
   };
 
   input.click();
 };
 
-// 사용 예시:
+// Usage examples:
 //
-// 백업:
+// Backup:
 // const count = await handleBackup(myItems, FileDB);
-// alert(`${count}건 백업 완료!`);
+// alert(`${count} item(s) backed up!`);
 //
-// 복원:
+// Restore:
 // handleRestore(myItems, setMyItems, FileDB);

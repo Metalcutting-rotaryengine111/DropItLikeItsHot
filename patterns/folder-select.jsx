@@ -1,12 +1,12 @@
 /**
  * 🔥 DropItLikeItsHot - Pattern 7: Folder Select
  *
- * 폴더 통째로 선택해서 그 안의 파일을 일괄 추가합니다.
- * webkitdirectory 속성을 사용합니다.
+ * Select an entire folder and bulk-add all the files inside.
+ * Uses the webkitdirectory attribute.
  *
- * ⚠️ 주의: webkitdirectory가 있는 input은 폴더만 선택 가능합니다.
- *    개별 파일도 선택하려면 input을 2개로 분리해야 합니다!
- *    → combo-upload.jsx 참고
+ * ⚠️ Warning: an input with webkitdirectory can ONLY select folders.
+ *    If you also need to pick individual files, split into 2 inputs!
+ *    → See combo-upload.jsx
  */
 
 const FolderSelect = ({ onFiles, accept = '.mp3,.wav,.flac,.m4a,.aiff' }) => {
@@ -15,7 +15,7 @@ const FolderSelect = ({ onFiles, accept = '.mp3,.wav,.flac,.m4a,.aiff' }) => {
   const handleChange = (e) => {
     const allFiles = Array.from(e.target.files || []);
 
-    // 폴더 안의 모든 파일 중 원하는 확장자만 필터링
+    // Filter to only the desired extensions from all files in the folder
     const exts = accept.split(',').map(ext => ext.trim().toLowerCase());
     const filtered = allFiles.filter(f =>
       exts.some(ext => f.name.toLowerCase().endsWith(ext))
@@ -24,10 +24,10 @@ const FolderSelect = ({ onFiles, accept = '.mp3,.wav,.flac,.m4a,.aiff' }) => {
     if (filtered.length > 0) {
       onFiles(filtered);
     } else {
-      alert('지원하는 파일이 없습니다.');
+      alert('No supported files found.');
     }
 
-    // ⚠️ 같은 폴더 재선택 가능하게 value 리셋
+    // ⚠️ Reset value so the same folder can be selected again
     e.target.value = '';
   };
 
@@ -45,12 +45,12 @@ const FolderSelect = ({ onFiles, accept = '.mp3,.wav,.flac,.m4a,.aiff' }) => {
           fontWeight: 'bold',
         }}
       >
-        📂 폴더 선택
+        📂 Select Folder
       </button>
 
       {/* ═══════════════════════════════════════════════ */}
-      {/* webkitdirectory: 폴더 선택 다이얼로그가 열림   */}
-      {/* 이게 있으면 개별 파일 선택이 불가능합니다!      */}
+      {/* webkitdirectory: opens a folder picker dialog  */}
+      {/* Once set, individual file selection is disabled! */}
       {/* ═══════════════════════════════════════════════ */}
       <input
         ref={folderInputRef}
@@ -65,11 +65,11 @@ const FolderSelect = ({ onFiles, accept = '.mp3,.wav,.flac,.m4a,.aiff' }) => {
   );
 };
 
-// 사용 예시:
+// Usage example:
 // <FolderSelect
 //   accept=".mp3,.wav,.flac"
 //   onFiles={(files) => {
-//     console.log(`${files.length}개 파일 선택됨`);
+//     console.log(`${files.length} file(s) selected`);
 //     files.forEach(f => console.log(f.name, f.size));
 //   }}
 // />

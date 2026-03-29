@@ -1,17 +1,17 @@
 /**
- * 🔥 DropItLikeItsHot - Pattern 2: Combo Upload (3종 세트)
+ * 🔥 DropItLikeItsHot - Pattern 2: Combo Upload (triple threat)
  *
- * 드래그앤드롭 + 파일선택 + 폴더선택
- * AI가 가장 많이 틀리는 패턴입니다.
+ * Drag-and-drop + file picker + folder picker
+ * The pattern AI gets wrong most often.
  *
- * ⚠️ 핵심: input을 반드시 2개로 분리하세요!
- *    webkitdirectory가 있으면 폴더만 선택됩니다.
+ * ⚠️ Key: Always split into 2 separate inputs!
+ *    If webkitdirectory is present, only folders can be selected.
  */
 
 const ComboUpload = ({ onFiles, accept = '.mp3,.wav,.flac,.m4a' }) => {
   const [isDragOver, setIsDragOver] = React.useState(false);
-  const fileInputRef = React.useRef(null);    // 개별 파일용
-  const folderInputRef = React.useRef(null);  // 폴더용
+  const fileInputRef = React.useRef(null);    // for individual files
+  const folderInputRef = React.useRef(null);  // for folders
 
   const filterAudio = (files) => {
     const exts = accept.split(',').map(e => e.trim().toLowerCase());
@@ -27,10 +27,10 @@ const ComboUpload = ({ onFiles, accept = '.mp3,.wav,.flac,.m4a' }) => {
 
   return (
     <div>
-      {/* 3종 세트 레이아웃 */}
+      {/* Triple-threat layout */}
       <div style={{ display: 'flex', gap: '12px', alignItems: 'stretch' }}>
 
-        {/* 1️⃣ 드롭존 */}
+        {/* 1️⃣ Drop zone */}
         <div
           style={{
             flex: 1,
@@ -47,11 +47,11 @@ const ComboUpload = ({ onFiles, accept = '.mp3,.wav,.flac,.m4a' }) => {
           onDrop={(e) => { e.preventDefault(); e.stopPropagation(); setIsDragOver(false); handleFiles(e.dataTransfer.files); }}
         >
           <p style={{ color: '#9ca3af', pointerEvents: 'none' }}>
-            {isDragOver ? '🔥 놓으세요!' : '파일을 드래그하세요'}
+            {isDragOver ? '🔥 Drop it!' : 'Drag files here'}
           </p>
         </div>
 
-        {/* 2️⃣ 파일 선택 버튼 */}
+        {/* 2️⃣ File picker button */}
         <button
           onClick={() => fileInputRef.current?.click()}
           style={{
@@ -65,10 +65,10 @@ const ComboUpload = ({ onFiles, accept = '.mp3,.wav,.flac,.m4a' }) => {
             whiteSpace: 'nowrap',
           }}
         >
-          🎵 파일 선택
+          🎵 Select Files
         </button>
 
-        {/* 3️⃣ 폴더 선택 버튼 */}
+        {/* 3️⃣ Folder picker button */}
         <button
           onClick={() => folderInputRef.current?.click()}
           style={{
@@ -82,16 +82,16 @@ const ComboUpload = ({ onFiles, accept = '.mp3,.wav,.flac,.m4a' }) => {
             whiteSpace: 'nowrap',
           }}
         >
-          📂 폴더 선택
+          📂 Select Folder
         </button>
       </div>
 
       {/* ═══════════════════════════════════════════════════════ */}
-      {/* ⚠️ input 2개 분리 — AI가 가장 많이 틀리는 부분!      */}
-      {/* webkitdirectory 있으면 폴더만 선택됨                   */}
+      {/* ⚠️ Two separate inputs — the part AI gets wrong most! */}
+      {/* With webkitdirectory, only folders can be selected     */}
       {/* ═══════════════════════════════════════════════════════ */}
 
-      {/* 파일 선택용 (webkitdirectory 없음) */}
+      {/* For file selection (no webkitdirectory) */}
       <input
         ref={fileInputRef}
         type="file"
@@ -101,7 +101,7 @@ const ComboUpload = ({ onFiles, accept = '.mp3,.wav,.flac,.m4a' }) => {
         onChange={(e) => { handleFiles(e.target.files); e.target.value = ''; }}
       />
 
-      {/* 폴더 선택용 (webkitdirectory 있음) */}
+      {/* For folder selection (with webkitdirectory) */}
       <input
         ref={folderInputRef}
         type="file"
